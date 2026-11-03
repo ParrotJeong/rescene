@@ -1,0 +1,1319 @@
+<!doctype html><html lang="ko"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>PULSE 초동 개표방송</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;800;900&family=Oswald:wght@500;600;700&display=swap">
+<style id="pulse-css">
+/* Layout: a broadcast studio wall. Header strap (program mark, LIVE, clock); hero = PULSE candidate panel (count + 개표율) beside the record duel; then the results board: milestone constituencies, trend + daily bars, hour-constituency map + all-time ranking, raw count log; a news ticker pinned to the bottom edge. */
+:root{
+  color-scheme:dark;
+  --studio:#060C22;
+  --studio-2:#0A1434;
+  --panel:#0F1B47;
+  --panel-2:#16265F;
+  --rule:rgba(150,172,255,.15);
+  --rule-2:rgba(150,172,255,.3);
+  --ink:#F2F4FF;
+  --ink-2:#B0BADF;
+  --ink-3:#8290BE;
+  --pulse:#FF4F80;
+  --pulse-2:#FF9DBA;
+  --pulse-deep:#C2245A;
+  --berry:#A974FF;
+  --berry-2:#D2BBFF;
+  --gold:#FFC83D;
+  --gold-ink:#261A00;
+  --stamp:#F0302E;
+  --up:#4BE3A4;
+  --tk-bg:#EEF1FF;
+  --tk-ink:#0B1538;
+  --h0:#1A2860;--h1:#3B2C72;--h2:#68307F;--h3:#A0337F;--h4:#DB3F7E;--h5:#FF7099;
+  --f-display:"Black Han Sans","Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --f-num:"Oswald","Arial Narrow","Roboto Condensed",sans-serif;
+  --ticker-h:46px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--studio)}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 520px at 50% -160px,rgba(60,96,230,.5),rgba(60,96,230,0) 70%),
+    linear-gradient(rgba(150,172,255,.03) 1px,transparent 1px) 0 0/100% 26px,
+    linear-gradient(90deg,rgba(150,172,255,.03) 1px,transparent 1px) 0 0/26px 100%,
+    var(--studio);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:15px;
+  line-height:1.55;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(var(--ticker-h) + env(safe-area-inset-bottom,0px) + 28px);
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--studio)}
+h1,h2,h3,p,ol,dl,dd{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+.wrap{width:100%;max-width:1240px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* demo banner */
+.demo-banner{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--gold);color:var(--gold-ink)}
+.demo-in{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;padding-block:8px;font-size:13px;font-weight:700}
+.demo-in b{font-family:var(--f-display);font-weight:400;font-size:16px}
+.demo-in .tbtn{margin-left:auto;color:var(--gold-ink);border-color:rgba(38,26,0,.4)}
+
+/* header strap */
+.strap{position:relative;overflow:hidden;background:linear-gradient(180deg,#0F1C50,#0A1438);border-bottom:1px solid var(--rule-2)}
+.strap-in{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding-block:14px 16px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{flex:none;width:50px;height:50px;border-radius:50%;background:var(--pulse);display:grid;place-items:center;box-shadow:0 0 0 4px rgba(255,79,128,.22)}
+.brand-mark svg{width:34px;height:22px}
+.brand-mark polyline{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--ink-2);font-weight:800}
+.program{font-family:var(--f-display);font-weight:400;font-size:clamp(23px,3.4vw,34px);line-height:1.12;letter-spacing:.01em;text-wrap:balance}
+.program em{font-style:normal;color:var(--pulse-2);font-family:var(--f-num);font-weight:700;letter-spacing:.03em}
+.strap-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:4px;background:var(--stamp);color:#fff;font-weight:800;font-size:13px;letter-spacing:.06em;white-space:nowrap}
+.live i{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1.2s steps(2,start) infinite}
+.live.pre{background:transparent;color:var(--gold);box-shadow:inset 0 0 0 1.5px var(--gold)}
+.live.pre i{background:var(--gold);animation:none}
+.live.done{background:var(--panel-2)}
+.live.done i{animation:none}
+.clock{font-family:var(--f-num);font-size:19px;font-weight:500;letter-spacing:.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.clock small{font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--ink-3);margin-left:4px;letter-spacing:.04em}
+.strap-tools{display:inline-flex;gap:6px}
+.tbtn{font-size:12px;font-weight:800;color:var(--ink-2);background:transparent;border:1px solid var(--rule-2);border-radius:4px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+.tbtn[aria-pressed="true"]{color:var(--gold-ink);background:var(--gold);border-color:var(--gold)}
+.tbtn.armed{background:var(--stamp);border-color:var(--stamp);color:#fff}
+.ecg{position:absolute;left:0;right:0;bottom:0;width:100%;height:26px;pointer-events:none}
+.ecg path{fill:none;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.ecg-base{stroke:rgba(255,79,128,.18);stroke-width:1.5}
+.ecg-trace{stroke:var(--pulse);stroke-width:2.2;stroke-dasharray:9 91;animation:trace 4.2s linear infinite}
+
+/* hero */
+main.wrap{display:grid;gap:18px;padding-block:20px 8px}
+.hero{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:980px){.hero{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}}
+.cand{position:relative;overflow:hidden;border-radius:14px;padding:22px 24px 20px;border:1px solid var(--rule-2);
+  background:linear-gradient(135deg,rgba(255,79,128,.24),rgba(255,79,128,0) 55%),linear-gradient(180deg,var(--panel-2),var(--panel))}
+.cand::before{content:"4";position:absolute;right:-.04em;top:-.2em;font:700 clamp(220px,30vw,340px)/1 var(--f-num);color:rgba(255,255,255,.04);pointer-events:none}
+.cand>*{position:relative}
+.cand-top{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap}
+.ballot{display:inline-flex;align-items:baseline;gap:4px;background:var(--pulse);color:#fff;font-weight:800;font-size:13px;padding:3px 11px 4px;border-radius:999px}
+.ballot b{font-family:var(--f-num);font-size:18px;line-height:1}
+.cand-meta{color:var(--ink-2);font-size:13px;font-weight:700}
+#hero-status{margin-left:auto}
+.cand-name{margin-top:10px;font-family:var(--f-num);font-weight:700;font-size:clamp(58px,10vw,112px);line-height:.9;letter-spacing:.02em;color:#fff}
+.count-block{margin-top:16px}
+.count-label{font-size:13px;font-weight:800;color:var(--pulse-2);letter-spacing:.06em}
+.count{display:flex;align-items:baseline;gap:8px;font-family:var(--f-num);font-weight:600;font-size:clamp(56px,9.4vw,108px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em;margin-top:2px}
+.count .unit{font-family:var(--f-display);font-weight:400;font-size:.32em;color:var(--ink-2)}
+.count-sub{margin-top:10px;color:var(--ink-2);font-size:14px}
+.count-sub b.up{color:var(--up);font-family:var(--f-num);font-weight:600;font-size:17px;letter-spacing:.02em}
+.countdown{margin-top:16px;display:grid;gap:4px;justify-items:start}
+.cd-label{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.06em}
+.cd-num{font-family:var(--f-num);font-weight:600;font-size:clamp(56px,9.4vw,108px);line-height:1;font-variant-numeric:tabular-nums}
+.cd-sub{color:var(--ink-2);font-size:14px;max-width:46ch}
+.countdown .btn{margin-top:10px}
+.turnout{margin-top:22px;padding-top:16px;border-top:1px dashed var(--rule-2)}
+.turnout-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.turnout-head span{font-family:var(--f-display);font-size:21px}
+.turnout-head b{font-family:var(--f-num);font-size:36px;font-weight:600;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.tbar{display:flex;gap:3px;height:14px;margin-top:10px}
+.tseg{position:relative;min-width:0;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.tseg i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--gold),#FFE28F)}
+.tseg.on i{box-shadow:2px 0 0 #fff}
+.tdays{display:flex;gap:3px;margin-top:6px}
+.tdays span{min-width:0;font-size:11px;font-weight:700;color:var(--ink-3);text-align:center;white-space:nowrap;overflow:hidden}
+.tdays small{font-weight:500}
+@media (max-width:560px){.tdays .short{visibility:hidden}}
+.fine{margin-top:10px;font-size:12px;color:var(--ink-3)}
+.cand .hero-stamp{right:18px;top:62px;width:116px;height:116px}
+.cand .hero-stamp span{font-size:34px}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:800;padding:4px 9px;border-radius:4px;letter-spacing:.02em;white-space:nowrap;line-height:1.2}
+.c-win{background:var(--stamp);color:#fff}
+.c-sure{background:var(--gold);color:var(--gold-ink)}
+.c-likely{color:var(--gold);box-shadow:inset 0 0 0 1.5px var(--gold)}
+.c-tossup{background:rgba(169,116,255,.2);color:var(--berry-2)}
+.c-behind{background:rgba(255,255,255,.06);color:var(--ink-3)}
+.c-counting{background:rgba(255,79,128,.18);color:var(--pulse-2)}
+.c-wait{background:rgba(255,255,255,.06);color:var(--ink-2)}
+.c-lose{background:rgba(255,255,255,.06);color:var(--ink-3);text-decoration:line-through}
+.c-final{background:var(--panel-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-2)}
+
+/* duel */
+.duel{border-radius:14px;padding:20px 22px;border:1px solid var(--rule-2);background:linear-gradient(180deg,var(--panel),#0C173D);display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px 14px;flex-wrap:wrap}
+.sec-h{font-family:var(--f-display);font-weight:400;font-size:21px;letter-spacing:.01em;line-height:1.25}
+.sec-sub{font-size:12px;color:var(--ink-3)}
+.duel-body{display:flex;flex-direction:column;gap:14px}
+.duel-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px 12px}
+.d-ballot{font-family:var(--f-num);font-size:26px;font-weight:700;width:42px;height:42px;border-radius:8px;display:grid;place-items:center;color:#fff}
+.pulse .d-ballot{background:var(--pulse)}
+.rival .d-ballot{background:var(--berry)}
+.d-name{min-width:0;font-family:var(--f-num);font-size:24px;font-weight:600;line-height:1.1;overflow:hidden;text-overflow:ellipsis}
+.d-name small{display:block;font-family:var(--f-body);font-size:12px;font-weight:700;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-val{font-family:var(--f-num);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.d-bar{grid-column:1/-1;position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px}
+.d-bar i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.pulse .d-bar i{background:linear-gradient(90deg,var(--pulse-deep),var(--pulse))}
+.rival .d-bar i{background:linear-gradient(90deg,#6E3BD9,var(--berry))}
+.d-mark{position:absolute;top:-5px;bottom:-5px;width:2px;margin-left:-1px;background:var(--gold)}
+.verdict{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;padding:12px 14px;border-radius:10px;background:rgba(255,200,61,.08);border:1px solid rgba(255,200,61,.28);font-size:15px;font-weight:700}
+.verdict b{font-family:var(--f-num);font-size:26px;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;margin-inline:3px}
+.verdict.won{background:rgba(240,48,46,.12);border-color:rgba(240,48,46,.5)}
+.verdict.won b{color:#FF8A86}
+.dstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.dstats>div{border-top:1px solid var(--rule);padding-top:8px;min-width:0}
+.dstats dt{font-size:12px;color:var(--ink-3);font-weight:700}
+.dstats dd{margin-top:2px;font-family:var(--f-num);font-size:21px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dstats dd small{font-family:var(--f-body);font-size:12px;color:var(--ink-2);margin-left:3px}
+.dstats dd.dur{font-family:var(--f-body);font-size:15px;font-weight:800}
+.empty{color:var(--ink-3);font-size:14px}
+
+/* cards + milestone board */
+.card{border-radius:14px;padding:18px 20px 20px;border:1px solid var(--rule);background:linear-gradient(180deg,rgba(21,35,92,.9),rgba(12,22,60,.9));min-width:0}
+.card>.sec-head{margin-bottom:14px}
+.ms-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.ms{position:relative;overflow:hidden;border-radius:10px;padding:12px 14px;background:var(--studio-2);border:1px solid var(--rule);min-height:132px;display:flex;flex-direction:column;gap:6px}
+.ms.rival{border-color:rgba(169,116,255,.5);background:linear-gradient(180deg,rgba(169,116,255,.16),var(--studio-2) 70%)}
+.ms.st-win{border-color:rgba(240,48,46,.65)}
+.ms-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ms-name{min-width:0;font-family:var(--f-display);font-size:20px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms.rival .ms-name{font-family:var(--f-num);font-weight:600}
+.ms-val{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.ms-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:auto}
+.ms-bar i{display:block;height:100%;background:var(--pulse)}
+.ms.rival .ms-bar i{background:var(--berry)}
+.ms.st-win .ms-bar i{background:var(--stamp)}
+.ms-foot{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.ms.shake{animation:shake .38s ease-out}
+
+/* the 당선 stamp */
+.stamp{position:absolute;right:8px;top:26px;width:72px;height:72px;border-radius:50%;border:4px solid var(--stamp);color:var(--stamp);display:grid;place-items:center;transform:rotate(-14deg);opacity:.9;pointer-events:none;filter:url(#ink)}
+.stamp::before{content:"";position:absolute;inset:5px;border-radius:50%;border:2px solid var(--stamp)}
+.stamp span{font-family:var(--f-display);font-size:23px;letter-spacing:.04em;line-height:1}
+.stamp.pending{opacity:0}
+.stamp.slam{animation:slam .44s cubic-bezier(.3,1.5,.5,1) both}
+
+/* trend + daily */
+.split{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:980px){.split{grid-template-columns:minmax(0,8fr) minmax(0,4fr)}.split-b{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}}
+.chart-box{min-height:230px}
+.chart{display:block;width:100%;height:auto}
+.chart .g{stroke:var(--rule);stroke-width:1}
+.chart .g0{stroke:var(--rule-2)}
+.chart .yl,.chart .xl{fill:var(--ink-3);font:500 12px var(--f-num)}
+.chart .xw{fill:var(--ink-3);font:700 10px var(--f-body)}
+.chart .ds{stroke:var(--rule);stroke-dasharray:2 4}
+.chart .rv{stroke:var(--berry);stroke-width:1.5;stroke-dasharray:6 5}
+.chart .rvl{fill:var(--berry-2);font:700 12px var(--f-body)}
+.chart .nw{stroke:var(--gold);stroke-width:1;stroke-dasharray:3 3}
+.chart .nwt{fill:var(--gold);font:800 11px var(--f-body)}
+.chart .ar{fill:url(#gA)}
+.chart .ga0{stop-color:var(--pulse);stop-opacity:.42}
+.chart .ga1{stop-color:var(--pulse);stop-opacity:0}
+.chart .ln{fill:none;stroke:var(--pulse);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
+.chart .pt{fill:var(--pulse-2)}
+.chart .lp{fill:#fff;stroke:var(--pulse);stroke-width:2.5}
+.chart .lr{fill:none;stroke:var(--pulse);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:ring 1.8s ease-out infinite}
+.chart .lb{fill:var(--pulse)}
+.chart .lt{fill:#fff;font:600 13px var(--f-num)}
+.chart .emp{fill:var(--ink-3);font:700 14px var(--f-body)}
+.daily{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;height:236px}
+.dbar{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dbar-v{font-family:var(--f-num);font-size:13px;text-align:center;font-variant-numeric:tabular-nums;min-height:19px;white-space:nowrap}
+.dbar-col{flex:1;display:flex;align-items:flex-end;background:rgba(255,255,255,.04);border-radius:4px 4px 0 0;overflow:hidden}
+.dbar-col i{display:block;width:100%;background:linear-gradient(180deg,var(--pulse),var(--pulse-deep));border-radius:4px 4px 0 0}
+.dbar.cur .dbar-col i{background:linear-gradient(180deg,var(--gold),#C98E00)}
+.dbar.cur .dbar-v{color:var(--gold)}
+.dbar.future .dbar-col{background:transparent;box-shadow:inset 0 0 0 1px var(--rule-2)}
+.dbar-l{text-align:center;font-size:12px;font-weight:700;color:var(--ink-2);line-height:1.25;white-space:nowrap}
+.dbar-l small{display:block;font-weight:500;color:var(--ink-3);font-size:11px}
+
+/* hour constituency map */
+.hm-scroll{overflow-x:auto}
+.hm{display:grid;grid-template-columns:46px repeat(24,minmax(8px,1fr));gap:3px;min-width:300px}
+.hm-l{font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap;align-self:center;font-variant-numeric:tabular-nums}
+.hm-l small{color:var(--ink-3);font-weight:500;margin-left:2px}
+.hm-h{font:500 10px var(--f-num);color:var(--ink-3);white-space:nowrap;overflow:visible}
+.hc{aspect-ratio:1/1;border-radius:3px;background:rgba(255,255,255,.04)}
+.hc.pre{background:repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 5px)}
+.hc.wait{background:rgba(255,200,61,.1);box-shadow:inset 0 0 0 1px rgba(255,200,61,.4)}
+.hc.l0{background:var(--h0)}.hc.l1{background:var(--h1)}.hc.l2{background:var(--h2)}.hc.l3{background:var(--h3)}.hc.l4{background:var(--h4)}.hc.l5{background:var(--h5)}
+.hc.now{box-shadow:inset 0 0 0 2px var(--gold);animation:glow 1.6s ease-in-out infinite}
+.hm-legend{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--ink-3)}
+.hm-legend span{display:inline-flex;align-items:center;gap:4px}
+.hm-legend .hc{display:inline-block;width:12px;height:12px;aspect-ratio:auto}
+
+/* ranking */
+.rank{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.rk{display:grid;grid-template-columns:30px minmax(0,1fr) auto;grid-template-areas:"n name v" "n bar bar";gap:6px 10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--studio-2);border:1px solid var(--rule)}
+.rk.cur{border-color:rgba(255,79,128,.55);background:linear-gradient(90deg,rgba(255,79,128,.18),var(--studio-2) 70%)}
+.rk-n{grid-area:n;font-family:var(--f-num);font-size:24px;font-weight:700;color:var(--ink-2);text-align:center}
+.rk.cur .rk-n{color:var(--pulse-2)}
+.rk-name{grid-area:name;min-width:0;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-name small{font-weight:500;color:var(--ink-3);margin-left:6px;font-size:12px}
+.rk-v{grid-area:v;font-family:var(--f-num);font-size:19px;font-variant-numeric:tabular-nums}
+.rk-bar{grid-area:bar;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.rk-bar i{display:block;height:100%;background:var(--berry)}
+.rk.cur .rk-bar i{background:var(--pulse)}
+
+/* log */
+.log summary{display:flex;align-items:baseline;gap:10px;cursor:pointer;list-style:none}
+.log summary::-webkit-details-marker{display:none}
+.log summary::after{content:"펼치기";margin-left:auto;font-size:12px;font-weight:800;color:var(--ink-3)}
+.log details[open] summary::after{content:"접기"}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+.log table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.log th,.log td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+.log th:first-child,.log td:first-child{text-align:left}
+.log th{color:var(--ink-3);font-weight:700;font-size:12px}
+.log td.m{text-align:left;white-space:normal;color:var(--ink-2);min-width:120px}
+.log td.n{font-family:var(--f-num);font-size:15px}
+
+/* footer */
+.foot{display:grid;gap:8px;padding-block:6px 20px;color:var(--ink-3);font-size:12.5px}
+.foot p{max-width:86ch}
+.foot b{color:var(--ink-2)}
+
+/* buttons */
+.btn{font-weight:800;font-size:15px;border:0;border-radius:8px;padding:11px 16px;cursor:pointer;background:var(--pulse);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-2)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--ink-3)}
+.btn:disabled{opacity:.55;cursor:progress}
+.admin-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--ticker-h) + env(safe-area-inset-bottom,0px) + 14px);z-index:35;background:var(--gold);color:var(--gold-ink);border:0;border-radius:999px;padding:12px 18px;font-weight:900;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.45);cursor:pointer}
+
+/* admin dialog */
+dialog.adm{width:min(660px,calc(100% - 24px));max-height:calc(100% - 32px);padding:0;border:1px solid var(--rule-2);border-radius:14px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog.adm::backdrop{background:rgba(3,6,20,.72)}
+.adm-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--rule)}
+.adm-h h2{font-family:var(--f-display);font-weight:400;font-size:22px}
+.adm-h h2 small{font-family:var(--f-body);font-size:12px;font-weight:800;color:var(--gold);margin-left:6px}
+.adm-b{padding:16px 18px 20px;display:grid;gap:22px}
+.adm-sec{display:grid;gap:12px}
+.adm-sec h3{font-size:15px;font-weight:900}
+.adm-sec h3 small{font-weight:600;color:var(--ink-3);margin-left:6px}
+.adm-help{font-size:13px;color:var(--ink-2)}
+.fld{display:grid;gap:6px;min-width:0}
+.fld label{font-size:12px;font-weight:800;color:var(--ink-2)}
+.fld input,.fld textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--studio);border:1px solid var(--rule-2);border-radius:8px;padding:10px 12px;width:100%;min-width:0}
+.fld input#in-v{font-family:var(--f-num);font-size:26px;font-weight:600;letter-spacing:.02em}
+.fld textarea{min-height:80px;resize:vertical;font-size:14px;line-height:1.5}
+.fld-row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.adm-msg{font-size:13px;font-weight:700;color:var(--gold);min-height:1.3em}
+.adm-msg.err{color:#FF8A86}
+.adm-actions{display:flex;gap:10px;flex-wrap:wrap}
+.adm-list{list-style:none;padding:0;display:grid;gap:6px;max-height:240px;overflow:auto}
+.adm-list li{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--studio);font-size:13px;font-variant-numeric:tabular-nums}
+.adm-list li.empty{display:block;color:var(--ink-3)}
+.adm-list .al-v{font-family:var(--f-num);font-size:16px}
+.adm-list .al-m{color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* flash + toast */
+.flash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(4,8,24,.74);padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));cursor:pointer}
+.flash-box{position:relative;width:min(720px,100%);background:linear-gradient(180deg,#16276F,#0B1640);border:2px solid var(--gold);border-radius:16px;padding:28px 28px 26px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.flash-kicker{display:inline-block;background:var(--stamp);color:#fff;font-family:var(--f-display);font-size:18px;padding:4px 12px;border-radius:4px}
+.flash-title{margin-top:14px;padding-right:96px;font-family:var(--f-display);font-size:clamp(27px,5vw,44px);line-height:1.18;text-wrap:balance}
+.flash-sub{margin-top:10px;color:var(--ink-2);font-size:15px;font-variant-numeric:tabular-nums}
+.flash .stamp{right:20px;top:-30px;width:118px;height:118px;opacity:0}
+.flash .stamp span{font-size:36px}
+.flash.go .flash-box{animation:pop .5s cubic-bezier(.2,1.3,.4,1) both}
+.flash.go .stamp{animation:slam .5s .32s cubic-bezier(.3,1.5,.5,1) both}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--ticker-h) + env(safe-area-inset-bottom,0px) + 16px);z-index:45;max-width:calc(100% - 32px);background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:14px;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+
+/* ticker */
+.ticker{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;height:calc(var(--ticker-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--tk-bg);color:var(--tk-ink);box-shadow:0 -8px 24px rgba(0,0,0,.35)}
+.tk-label{flex:none;display:flex;align-items:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;background:var(--stamp);color:#fff;font-family:var(--f-display);font-size:19px;letter-spacing:.04em}
+.tk-track{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tk-run{display:inline-flex;align-items:center;white-space:nowrap;font-weight:800;font-size:16px;animation:marquee var(--tk-dur,40s) linear infinite}
+.tk{padding:0 18px}
+.tk-sep{color:var(--stamp);font-size:9px}
+
+@keyframes blink{to{visibility:hidden}}
+@keyframes trace{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes slam{0%{opacity:0;transform:rotate(-28deg) scale(2.6)}62%{opacity:1;transform:rotate(-12deg) scale(.9)}100%{opacity:.9;transform:rotate(-14deg) scale(1)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translate(-3px,2px)}45%{transform:translate(3px,-2px)}70%{transform:translate(-2px,1px)}}
+@keyframes ring{0%{transform:scale(.5);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes glow{50%{box-shadow:inset 0 0 0 2px rgba(255,200,61,.35)}}
+@keyframes pop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:none}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (max-width:560px){
+  .cand,.duel,.card{padding-left:16px;padding-right:16px}
+  .cand .hero-stamp{width:92px;height:92px;top:96px;right:10px}
+  .cand .hero-stamp span{font-size:27px}
+  .stamp{width:60px;height:60px;top:30px;right:6px}
+  .stamp span{font-size:19px}
+  .ms{min-height:120px;padding:11px 12px}
+  .ms-name{font-size:18px}
+  .d-val{font-size:24px}
+  .tk-label{font-size:16px;padding-right:12px}
+  .tk-run{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .tk-run{animation:none!important}
+  .live i,.ecg-trace{animation:none!important}
+}
+</style>
+<div id="app">
+<svg class="defs" aria-hidden="true" focusable="false"><filter id="ink" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter></svg>
+
+<div class="demo-banner" id="demo-banner" hidden><div class="wrap demo-in"><b>예시 화면</b><span>실제 판매량이 아니라 개표 화면이 어떻게 움직이는지 보여주는 예시예요.</span><button type="button" class="tbtn" id="demo-off">예시 끄기</button></div></div>
+
+<header class="strap">
+  <div class="wrap strap-in">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 24"><polyline points="1,14 10,14 14,4 19,21 24,9 27,14 39,14"></polyline></svg></div>
+      <div>
+        <p class="eyebrow">제4회 리센느 미니앨범 초동선거</p>
+        <h1 class="program"><em>PULSE</em> 초동 개표방송</h1>
+      </div>
+    </div>
+    <div class="strap-right">
+      <span class="live pre" id="live-chip"><i></i><b id="live-txt">발매 전</b></span>
+      <span class="clock" id="clock">11.3(화) 18:00:00</span>
+      <span class="strap-tools">
+        <button type="button" class="tbtn" id="btn-sound" aria-pressed="false">효과음</button>
+        <button type="button" class="tbtn" id="btn-full">전체화면</button>
+      </span>
+    </div>
+  </div>
+  <svg class="ecg" viewBox="0 0 1200 30" preserveAspectRatio="none" aria-hidden="true"><path class="ecg-base" d="M0 21H262L270 21 276 9 284 28 292 4 300 25 306 21H662L670 21 676 9 684 28 692 4 700 25 706 21H1062L1070 21 1076 9 1084 28 1092 4 1100 25 1106 21H1200"></path><path class="ecg-trace" pathLength="100" d="M0 21H262L270 21 276 9 284 28 292 4 300 25 306 21H662L670 21 676 9 684 28 692 4 700 25 706 21H1062L1070 21 1076 9 1084 28 1092 4 1100 25 1106 21H1200"></path></svg>
+</header>
+
+<main class="wrap" id="main">
+  <section class="hero" aria-label="PULSE 개표 현황">
+    <article class="cand">
+      <div class="cand-top">
+        <span class="ballot">기호 <b>4</b></span>
+        <span class="cand-meta">리센느 미니 4집 · 타이틀곡 「With」</span>
+        <span class="chip c-wait" id="hero-status">발매 전</span>
+      </div>
+      <h2 class="cand-name">PULSE</h2>
+      <div class="stamp hero-stamp" id="hero-stamp" hidden aria-hidden="true"><span>당선</span></div>
+      <div class="count-block" id="count-block" hidden>
+        <p class="count-label" id="count-label">초동 누적 득표</p>
+        <p class="count"><span id="count-num">0</span><span class="unit">장</span></p>
+        <p class="count-sub" id="count-sub"></p>
+      </div>
+      <div class="countdown" id="countdown">
+        <p class="cd-label">개표 시작까지</p>
+        <p class="cd-num" id="cd-num">--:--:--</p>
+        <p class="cd-sub" id="cd-sub">11월 3일(화) 오후 6시 발매와 동시에 초동 개표를 시작해요.</p>
+        <button type="button" class="btn ghost" id="demo-on">예시 화면 미리보기</button>
+      </div>
+      <div class="turnout">
+        <div class="turnout-head"><span>개표율</span><b id="turnout-pct">0.0%</b></div>
+        <div class="tbar" id="tbar"></div>
+        <div class="tdays" id="tdays"></div>
+        <p class="fine">초동 집계 기간이 지난 비율 · <span id="period-txt">11.3(화) 18:00 ~ 11.9(월) 24:00</span></p>
+      </div>
+    </article>
+    <article class="duel" aria-labelledby="duel-h">
+      <div class="sec-head"><h3 class="sec-h" id="duel-h">자체 최고 초동 맞대결</h3><span class="chip c-wait" id="duel-status">개표 전</span></div>
+      <div class="duel-body" id="duel-body"></div>
+    </article>
+  </section>
+
+  <section class="card" aria-labelledby="ms-h">
+    <div class="sec-head"><h3 class="sec-h" id="ms-h">목표 선거구 개표 현황</h3><p class="sec-sub">선거구는 판매량 목표예요. 넘으면 당선.</p></div>
+    <div class="ms-grid" id="ms-grid"></div>
+  </section>
+
+  <section class="split">
+    <article class="card" aria-labelledby="chart-h">
+      <div class="sec-head"><h3 class="sec-h" id="chart-h">개표 추이</h3><p class="sec-sub">초동 누적 판매량 · 집계가 입력된 시각 기준</p></div>
+      <div class="chart-box" id="chart"></div>
+    </article>
+    <article class="card" aria-labelledby="daily-h">
+      <div class="sec-head"><h3 class="sec-h" id="daily-h">일자별 득표</h3><p class="sec-sub">입력 사이 구간은 고르게 나눈 추정</p></div>
+      <div class="daily" id="daily"></div>
+    </article>
+  </section>
+
+  <section class="split split-b">
+    <article class="card" aria-labelledby="hm-h">
+      <div class="sec-head"><h3 class="sec-h" id="hm-h">시간 선거구 개표 현황</h3><p class="sec-sub">초동 150시간을 한 시간씩 나눈 150개 선거구</p></div>
+      <div class="hm-scroll"><div class="hm" id="hmap"></div></div>
+      <div class="hm-legend"><span>적음 <i class="hc l1"></i><i class="hc l2"></i><i class="hc l3"></i><i class="hc l4"></i><i class="hc l5"></i> 많음</span><span><i class="hc now"></i> 지금</span><span><i class="hc wait"></i> 집계 대기</span><span><i class="hc pre"></i> 발매 전</span></div>
+    </article>
+    <article class="card" aria-labelledby="rank-h">
+      <div class="sec-head"><h3 class="sec-h" id="rank-h">역대 초동 순위</h3><p class="sec-sub">리센느 앨범 초동 비교</p></div>
+      <ol class="rank" id="rank"></ol>
+    </article>
+  </section>
+
+  <section class="card log">
+    <details id="log">
+      <summary><span class="sec-h">집계 기록</span><span class="sec-sub" id="log-sum">아직 없어요</span></summary>
+      <div class="tbl-wrap"><table><thead><tr><th scope="col">기준 시각</th><th scope="col">누적</th><th scope="col">증가</th><th scope="col">시간당</th><th scope="col">메모</th></tr></thead><tbody id="log-body"></tbody></table></div>
+    </details>
+  </section>
+  <p class="sr" id="sr-live" aria-live="polite"></p>
+</main>
+
+<footer class="wrap foot">
+  <p><b>판정 기준</b> 당선은 목표 돌파. 확실은 목표의 90% 이상이면서 최근 3시간 속도로 남은 표의 2배 이상을 모을 수 있을 때, 유력은 70% 이상이면서 1.2배 이상, 경합은 40% 이상이거나 최근 속도로 도달 가능할 때, 그 밖은 열세예요. 재미로 보는 단순 계산이에요.</p>
+  <p><b>개표율</b> 앨범은 전체 표 수를 알 수 없어서, 초동 집계 기간(발매 시각부터 7일째 자정까지)이 지난 비율로 보여줘요.</p>
+  <p><b>출처</b> PULSE 판매량은 한터차트 실시간 초동 수치를 운영자가 직접 옮겨 적은 값이에요. <span id="src-note"></span></p>
+  <p>리센느 팬이 만든 비공식 개표방송 패러디 페이지예요. 한터차트, 소속사, 방송사와는 관련이 없어요.</p>
+</footer>
+
+<button type="button" class="admin-fab" id="admin-fab" hidden>집계 입력</button>
+
+<dialog class="adm" id="admin-dlg" aria-labelledby="adm-title">
+  <div class="adm-h"><h2 id="adm-title">집계 입력<small>운영자 전용</small></h2><button type="button" class="tbtn" id="adm-close">닫기</button></div>
+  <div class="adm-b">
+    <form class="adm-sec" id="f-snap" novalidate>
+      <h3>새 집계 반영</h3>
+      <p class="adm-help">한터차트에 보이는 PULSE 초동 누적 판매량을 입력하세요. 반영하면 이 페이지를 보고 있는 모든 사람의 화면이 새 숫자로 바뀌어요.</p>
+      <div class="fld"><label for="in-v">초동 누적 판매량 (장)</label><input id="in-v" inputmode="numeric" autocomplete="off" placeholder="예: 128734"></div>
+      <div class="fld-row">
+        <div class="fld"><label for="in-t">기준 시각 (한국 시간)</label><input id="in-t" type="datetime-local" step="60"></div>
+        <div class="fld"><label for="in-m">메모 (선택)</label><input id="in-m" maxlength="60" autocomplete="off" placeholder="예: 한터 앱 실시간"></div>
+      </div>
+      <p class="adm-msg" id="snap-msg" role="alert"></p>
+      <div class="adm-actions"><button type="submit" class="btn" id="snap-go">개표 반영</button></div>
+    </form>
+    <section class="adm-sec">
+      <h3>입력한 집계<small id="adm-count"></small></h3>
+      <ol class="adm-list" id="adm-list"></ol>
+    </section>
+    <form class="adm-sec" id="f-set" novalidate>
+      <h3>설정</h3>
+      <div class="fld"><label for="set-rivals">비교 기록 (한 줄에 하나: 이름 | 설명 | 초동 | 출처)</label><textarea id="set-rivals" rows="3"></textarea></div>
+      <div class="fld"><label for="set-ms">목표 선거구 (쉼표로 구분, 예: 5만, 10만, 150000)</label><input id="set-ms" autocomplete="off"></div>
+      <div class="fld"><label for="set-notes">속보 자막 추가 (한 줄에 하나)</label><textarea id="set-notes" rows="3"></textarea></div>
+      <div class="fld-row">
+        <div class="fld"><label for="set-start">초동 시작 (한국 시간)</label><input id="set-start" type="datetime-local" step="60"></div>
+        <div class="fld"><label for="set-end">초동 마감 (한국 시간)</label><input id="set-end" type="datetime-local" step="60"></div>
+      </div>
+      <p class="adm-msg" id="set-msg" role="alert"></p>
+      <div class="adm-actions"><button type="submit" class="btn ghost" id="set-go">설정 저장</button><button type="button" class="btn ghost" id="demo-on-2">예시 화면 보기</button></div>
+    </form>
+  </div>
+</dialog>
+
+<div class="flash" id="flash" hidden>
+  <div class="flash-box" role="alert">
+    <span class="flash-kicker" id="flash-kicker">속보</span>
+    <p class="flash-title" id="flash-title"></p>
+    <p class="flash-sub" id="flash-sub"></p>
+    <div class="stamp" aria-hidden="true"><span>당선</span></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<div class="ticker">
+  <div class="tk-label" id="ticker-label">예고</div>
+  <div class="tk-track" aria-hidden="true"><div class="tk-run" id="ticker-run"></div></div>
+</div>
+</div>
+<script type="application/json" id="pulse-state">{
+ "v": 1,
+ "album": "PULSE",
+ "artist": "리센느",
+ "edition": "미니 4집",
+ "titleTrack": "With",
+ "releaseAt": "2026-11-03T18:00:00+09:00",
+ "endAt": "2026-11-10T00:00:00+09:00",
+ "rivals": [
+  {"name": "lip bomb", "sub": "미니 3집 · 2025.11.25 발매", "value": 104406, "src": "2025.12.3 스포츠경향 보도 기준", "ballot": "3"}
+ ],
+ "milestones": [50000, 100000, 150000, 200000, 300000],
+ "snapshots": [],
+ "notes": [],
+ "updatedAt": null
+}</script>
+<script id="pulse-app">
+(() => {
+'use strict';
+
+/* ---------- canonical source, captured before anything renders (used to republish) ---------- */
+const SELF = document.currentScript;
+const APP_JS = SELF ? SELF.textContent : '';
+const CSS_EL = document.getElementById('pulse-css');
+const CSS_TEXT = CSS_EL ? CSS_EL.textContent : '';
+const ROOT = document.getElementById('app');
+const SHELL = ROOT ? ROOT.innerHTML : '';
+const FONT_URL = 'https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;800;900&family=Oswald:wght@500;600;700&display=swap';
+const HEAD_TAGS = '<title>PULSE 초동 개표방송</title>\n'
+  + '<meta name="claude:viewport-fit-sides" content="cover">\n'
+  + '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+  + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+  + '<link rel="stylesheet" href="' + FONT_URL + '">\n';
+const RESET = (() => {
+  try {
+    for (const s of document.head.querySelectorAll('style')) {
+      const t = s.textContent || '';
+      if (t.indexOf('safe-area-inset') > -1) return t;
+    }
+  } catch (e) {}
+  return ':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}';
+})();
+function buildHtml(st) {
+  const json = JSON.stringify(st, null, 1).replace(/</g, '\\u003c');
+  const close = '</scr' + 'ipt>';
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>' + RESET + '</style></head><body>'
+    + HEAD_TAGS
+    + '<style id="pulse-css">' + CSS_TEXT + '</style>\n'
+    + '<div id="app">' + SHELL + '</div>\n'
+    + '<script type="application/json" id="pulse-state">' + json + close + '\n'
+    + '<script id="pulse-app">' + APP_JS + close
+    + '</body></html>';
+}
+
+/* ---------- helpers ---------- */
+const H = 36e5, DAY = 24 * H, KST = 9 * H;
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+const REDUCED = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const nf = new Intl.NumberFormat('ko-KR');
+const fN = n => nf.format(Math.round(n));
+const fSigned = n => (n > 0 ? '+' : n < 0 ? '−' : '±') + fN(Math.abs(n));
+function fMan(n) {
+  if (Math.abs(n) >= 10000) { const x = Math.round(n / 1000) / 10; return (x % 1 === 0 ? x.toFixed(0) : x.toFixed(1)) + '만'; }
+  return fN(n);
+}
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const p2 = n => String(n).padStart(2, '0');
+function kp(ms) { const d = new Date(ms + KST); return { y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, d: d.getUTCDate(), h: d.getUTCHours(), mi: d.getUTCMinutes(), s: d.getUTCSeconds(), wd: WD[d.getUTCDay()] }; }
+const fDay = ms => { const k = kp(ms); return k.mo + '.' + k.d + '(' + k.wd + ')'; };
+const fHM = ms => { const k = kp(ms); return p2(k.h) + ':' + p2(k.mi); };
+const fDT = ms => fDay(ms) + ' ' + fHM(ms);
+function fEdge(ms) { const k = kp(ms); return (k.h === 0 && k.mi === 0) ? fDay(ms - 1) + ' 24:00' : fDT(ms); }
+function fKoDate(ms) { const k = kp(ms); return k.mo + '월 ' + k.d + '일(' + k.wd + ')'; }
+function fKoTime(ms) { const k = kp(ms); const h12 = k.h % 12 === 0 ? 12 : k.h % 12; return (k.h < 12 ? '오전 ' : '오후 ') + h12 + '시' + (k.mi ? ' ' + k.mi + '분' : ''); }
+const dayStartK = ms => Math.floor((ms + KST) / DAY) * DAY - KST;
+function fDur(ms) {
+  const m = Math.floor(Math.max(0, ms) / 6e4); const d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
+  return (d ? d + '일 ' : '') + (d || h ? h + '시간 ' : '') + mm + '분';
+}
+function toInput(ms) { const k = kp(ms); return k.y + '-' + p2(k.mo) + '-' + p2(k.d) + 'T' + p2(k.h) + ':' + p2(k.mi); }
+function fromInput(v) { const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(v || ''); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - KST : NaN; }
+function isoK(ms) { const k = kp(ms); return k.y + '-' + p2(k.mo) + '-' + p2(k.d) + 'T' + p2(k.h) + ':' + p2(k.mi) + ':' + p2(k.s) + '+09:00'; }
+const store = (area) => ({
+  get(k) { try { return window[area].getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { window[area].setItem(k, v); } catch (e) {} },
+  del(k) { try { window[area].removeItem(k); } catch (e) {} }
+});
+const LS = store('localStorage'), SS = store('sessionStorage');
+const $ = id => document.getElementById(id);
+
+/* ---------- state ---------- */
+const DEFAULTS = {
+  v: 1, album: 'PULSE', artist: '리센느', edition: '미니 4집', titleTrack: 'With',
+  releaseAt: '2026-11-03T18:00:00+09:00', endAt: '2026-11-10T00:00:00+09:00',
+  rivals: [], milestones: [50000, 100000, 150000, 200000, 300000], snapshots: [], notes: [], updatedAt: null
+};
+function ballotOf(sub) { const m = /미니\s*(\d+)\s*집/.exec(sub || ''); return m ? m[1] : ''; }
+function normalize(raw) {
+  const s = Object.assign({}, DEFAULTS, raw && typeof raw === 'object' ? raw : {});
+  if (!isFinite(Date.parse(s.releaseAt))) s.releaseAt = DEFAULTS.releaseAt;
+  const r0 = Date.parse(s.releaseAt), e0 = Date.parse(s.endAt);
+  if (!isFinite(e0) || e0 <= r0 || e0 - r0 > 31 * DAY) s.endAt = isoK(r0 + 7 * DAY);
+  s.rivals = (Array.isArray(s.rivals) ? s.rivals : []).map(r => {
+    const sub = String((r && r.sub) || '').trim().slice(0, 60);
+    return { name: String((r && r.name) || '').trim().slice(0, 40), sub, value: Math.round(Number(r && r.value)), src: String((r && r.src) || '').trim().slice(0, 80), ballot: String((r && r.ballot) || ballotOf(sub)).slice(0, 3) };
+  }).filter(r => r.name && isFinite(r.value) && r.value > 0).slice(0, 8);
+  s.milestones = [...new Set((Array.isArray(s.milestones) ? s.milestones : []).map(n => Math.round(Number(n))).filter(n => isFinite(n) && n > 0))].sort((a, b) => a - b).slice(0, 10);
+  s.snapshots = (Array.isArray(s.snapshots) ? s.snapshots : []).map(p => ({ t: String((p && p.t) || ''), v: Math.round(Number(p && p.v)), m: String((p && p.m) || '').trim().slice(0, 60) }))
+    .filter(p => isFinite(Date.parse(p.t)) && isFinite(p.v) && p.v >= 0)
+    .sort((a, b) => Date.parse(a.t) - Date.parse(b.t)).slice(-400);
+  s.notes = (Array.isArray(s.notes) ? s.notes : []).map(n => String(n).trim().slice(0, 120)).filter(Boolean).slice(0, 12);
+  return s;
+}
+function readState() { try { return normalize(JSON.parse($('pulse-state').textContent)); } catch (e) { return normalize({}); } }
+let realState = readState();
+
+/* ---------- model ---------- */
+const JT = { win: '당선', sure: '확실', likely: '유력', tossup: '경합', behind: '열세', counting: '개표 중', wait: '개표 전', lose: '낙선' };
+function derive(st, now) {
+  const R = Date.parse(st.releaseAt), E = Date.parse(st.endAt);
+  const P = [{ t: R, v: 0 }];
+  for (const s of st.snapshots) P.push({ t: Math.max(Date.parse(s.t), R + 1000), v: s.v, m: s.m });
+  P.sort((a, b) => a.t - b.t);
+  const hasData = P.length > 1, last = P[P.length - 1];
+  const total = hasData ? last.v : 0;
+  const phase = now < R ? 'pre' : now < E ? 'live' : 'done';
+  const prev = hasData ? P[P.length - 2] : null;
+  let pace = null;
+  if (hasData) {
+    let ref = P[0];
+    for (let i = P.length - 2; i >= 0; i--) { if (last.t - P[i].t >= 3 * H) { ref = P[i]; break; } }
+    const dt = (last.t - ref.t) / H;
+    if (dt >= 0.5) pace = Math.max(0, (last.v - ref.v) / dt);
+  }
+  const rivals = st.rivals.slice().sort((a, b) => b.value - a.value);
+  return {
+    R, E, P, hasData, last, total, phase, now, pace, rivals, top: rivals[0] || null,
+    turnout: clamp((now - R) / (E - R), 0, 1),
+    delta: hasData ? last.v - prev.v : 0,
+    dataH: hasData ? (last.t - R) / H : 0,
+    remDataH: Math.max(0, (E - (hasData ? last.t : R)) / H),
+    final: now >= E && hasData && last.t >= E - H
+  };
+}
+function valueAt(P, t) {
+  if (t <= P[0].t) return 0;
+  for (let i = 1; i < P.length; i++) { const b = P[i]; if (t <= b.t) { const a = P[i - 1]; return a.v + (b.v - a.v) * ((t - a.t) / ((b.t - a.t) || 1)); } }
+  return P[P.length - 1].v;
+}
+function crossAt(P, T) {
+  for (let i = 1; i < P.length; i++) {
+    if (P[i].v >= T) { const a = P[i - 1], b = P[i]; const f = b.v === a.v ? 1 : clamp((T - a.v) / (b.v - a.v), 0, 1); return a.t + (b.t - a.t) * f; }
+  }
+  return null;
+}
+function judge(d, T) {
+  if (d.total >= T) return 'win';
+  if (d.phase === 'pre') return 'wait';
+  if (d.phase === 'done') return d.final ? 'lose' : 'counting';
+  if (!d.hasData || d.dataH < 2 || d.pace == null) return 'counting';
+  const prog = d.total / T, ratio = d.pace * d.remDataH / (T - d.total);
+  if (prog >= 0.9 && ratio >= 2) return 'sure';
+  if (prog >= 0.7 && ratio >= 1.2) return 'likely';
+  if (prog >= 0.4 || ratio >= 1) return 'tossup';
+  return 'behind';
+}
+function segments(d) {
+  const out = []; let t0 = d.R;
+  while (t0 < d.E) { const t1 = Math.min(dayStartK(t0) + DAY, d.E); out.push({ t0, t1, hours: (t1 - t0) / H, k: kp(t0) }); t0 = t1; }
+  return out;
+}
+const rvKey = r => 'rv:' + r.name + ':' + r.value;
+function tilesOf(d, st) {
+  const arr = st.milestones.map(v => ({ key: 'ms:' + v, value: v, name: fMan(v), kind: 'ms' }));
+  d.rivals.forEach((r, i) => arr.push({ key: rvKey(r), value: r.value, name: r.name, kind: 'rival', r, isTop: i === 0 }));
+  return arr.sort((a, b) => a.value - b.value);
+}
+
+/* ---------- elements ---------- */
+const els = {};
+['clock', 'live-chip', 'live-txt', 'btn-sound', 'btn-full', 'hero-status', 'hero-stamp', 'count-block', 'count-label', 'count-num', 'count-sub',
+  'countdown', 'cd-num', 'cd-sub', 'demo-on', 'demo-on-2', 'demo-off', 'demo-banner', 'turnout-pct', 'tbar', 'tdays', 'period-txt',
+  'duel-status', 'duel-body', 'ms-grid', 'chart', 'daily', 'hmap', 'rank', 'log-sum', 'log-body', 'sr-live', 'src-note',
+  'admin-fab', 'admin-dlg', 'adm-close', 'f-snap', 'in-v', 'in-t', 'in-m', 'snap-msg', 'snap-go', 'adm-count', 'adm-list',
+  'f-set', 'set-rivals', 'set-ms', 'set-notes', 'set-start', 'set-end', 'set-msg', 'set-go',
+  'flash', 'flash-kicker', 'flash-title', 'flash-sub', 'toast', 'ticker-label', 'ticker-run'
+].forEach(id => { els[id.replace(/-(\w)/g, (_, c) => c.toUpperCase())] = $(id); });
+function setChip(el, key, txt) { if (!el) return; el.className = 'chip c-' + key; el.textContent = txt; }
+
+/* ---------- viewer memory (per browser) ---------- */
+const MEM_KEY = 'pulse-chodong-v1';
+let mem = null;
+try { mem = JSON.parse(LS.get(MEM_KEY) || 'null'); } catch (e) { mem = null; }
+const firstVisit = !mem;
+mem = mem && typeof mem === 'object' ? mem : { shown: null, seen: [] };
+const seenReal = new Set(Array.isArray(mem.seen) ? mem.seen : []);
+function persist() { if (demo) return; mem.shown = curTarget; mem.seen = [...seenReal]; LS.set(MEM_KEY, JSON.stringify(mem)); }
+
+/* ---------- demo (local only, never saved) ---------- */
+let demo = null;
+const demoSimH = () => 150 * Math.pow(Math.min((performance.now() - demo.t0) / 80000, 1), 1.7);
+const demoCurve = (h, F) => F * (0.5 * (1 - Math.exp(-h / 3)) + 0.5 * Math.pow(h / 150, 0.8));
+function nowMs() { return demo ? Date.parse(realState.releaseAt) + demoSimH() * H : Date.now(); }
+function viewState() { return demo ? Object.assign({}, realState, { snapshots: demo.snaps, notes: [] }) : realState; }
+const seenSet = () => (demo ? demo.seen : seenReal);
+function demoStep() {
+  if (!demo) return;
+  const h = demoSimH();
+  if (h >= 0.2) {
+    const prevV = demo.snaps.length ? demo.snaps[demo.snaps.length - 1].v : 0;
+    const v = Math.max(prevV, Math.round(demoCurve(h, demo.F) * (0.985 + Math.random() * 0.03)));
+    demo.snaps.push({ t: isoK(Date.parse(realState.releaseAt) + h * H), v, m: '예시' });
+  }
+  if (h >= 150) clearInterval(demo.timer);
+  renderAll();
+}
+function demoStart() {
+  if (demo) return;
+  if (els.adminDlg.open) els.adminDlg.close();
+  demo = { t0: performance.now(), F: 150000 + Math.round(Math.random() * 60000), snaps: [], seen: new Set(), saved: { shown, curTarget } };
+  shown = 0; curTarget = null;
+  els.demoBanner.hidden = false;
+  demo.timer = setInterval(demoStep, 1300);
+  lastPhase = null;
+  renderAll();
+  try { window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) {}
+}
+function demoStop() {
+  if (!demo) return;
+  clearInterval(demo.timer);
+  const sv = demo.saved; demo = null;
+  shown = sv.shown; curTarget = sv.curTarget;
+  els.demoBanner.hidden = true; els.flash.hidden = true;
+  lastPhase = null;
+  renderAll();
+}
+
+/* ---------- count tween ---------- */
+let shown = null, curTarget = null, raf = 0, initialFrom = null, lastD = null, topKey = null;
+function onStep(v) {
+  shown = v;
+  const txt = fN(v);
+  els.countNum.textContent = txt;
+  document.querySelectorAll('[data-live="pulse"]').forEach(el => { el.textContent = txt; });
+  document.querySelectorAll('[data-live-bar]').forEach(el => { el.style.width = (clamp(v / (+el.dataset.liveBar || 1), 0, 1) * 100).toFixed(2) + '%'; });
+  document.querySelectorAll('.stamp.pending').forEach(s => {
+    if (v + 0.5 < +s.dataset.th) return;
+    s.classList.remove('pending'); s.classList.add('slam');
+    const tile = s.closest('.ms');
+    if (tile) { tile.classList.add('shake', 'st-win'); setChip(tile.querySelector('[data-chip]'), 'win', '당선'); }
+    const key = s.dataset.key;
+    if (key) blip('stamp');
+    if (key && !seenSet().has(key)) { seenSet().add(key); if (key === topKey) newsFlash(); }
+  });
+}
+function tween(from, to) {
+  cancelAnimationFrame(raf);
+  if (REDUCED || from === to) { onStep(to); persist(); return; }
+  const dur = clamp(700 + Math.log10(Math.abs(to - from) + 1) * 380, 700, 2600), t0 = performance.now();
+  const step = t => {
+    const k = clamp((t - t0) / dur, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    onStep(k >= 1 ? to : from + (to - from) * e);
+    if (k < 1) raf = requestAnimationFrame(step); else persist();
+  };
+  raf = requestAnimationFrame(step);
+}
+function planTween(d) {
+  if (d.phase === 'pre') return null;
+  const to = d.total;
+  if (curTarget === to && shown != null) return null;
+  let from = shown;
+  if (from == null) from = initialFrom != null ? Math.min(initialFrom, to) : ((firstVisit || demo) ? 0 : to);
+  if (shown != null && curTarget != null && to !== curTarget) blip('tick');
+  shown = from; curTarget = to;
+  return { from, to };
+}
+
+/* ---------- renderers ---------- */
+function renderHeader(d) {
+  const chip = els.liveChip;
+  chip.className = 'live' + (d.phase === 'pre' ? ' pre' : d.phase === 'done' ? ' done' : '');
+  els.liveTxt.textContent = (d.phase === 'pre' ? '발매 전' : d.phase === 'done' ? '개표 완료' : 'LIVE') + (demo ? ' · 예시' : '');
+}
+function clockHTML(now) { const k = kp(now); return esc(fDay(now)) + ' ' + p2(k.h) + ':' + p2(k.mi) + ':' + p2(k.s) + '<small>' + (demo ? '예시 시각' : 'KST') + '</small>'; }
+function countdownText(ms) {
+  const s = Math.max(0, Math.ceil(ms / 1000)), dd = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+  return (dd ? 'D-' + dd + ' ' : '') + p2(h) + ':' + p2(m) + ':' + p2(x);
+}
+function renderHero(d, st) {
+  const pre = d.phase === 'pre';
+  els.countBlock.hidden = pre; els.countdown.hidden = !pre;
+  els.demoOn.hidden = !!demo;
+  let key, txt;
+  const broke = d.top && d.total >= d.top.value;
+  if (pre) { key = 'wait'; txt = '발매 전'; }
+  else if (broke) { key = 'win'; txt = '자체 최고 경신'; }
+  else if (d.phase === 'done' && d.final) { key = 'final'; txt = '개표 완료'; }
+  else if (d.top) { const j = judge(d, d.top.value); key = j; txt = j === 'counting' ? '개표 중' : '경신 ' + JT[j]; }
+  else { key = 'counting'; txt = '개표 중'; }
+  setChip(els.heroStatus, key, txt);
+  const hs = els.heroStamp;
+  hs.hidden = !broke;
+  if (broke) { hs.dataset.th = d.top.value; hs.classList.remove('slam'); hs.classList.toggle('pending', shown != null && shown + 0.5 < d.top.value); }
+  if (pre) {
+    els.cdNum.textContent = countdownText(d.R - d.now);
+    els.cdSub.textContent = fKoDate(d.R) + ' ' + fKoTime(d.R) + ' 발매와 동시에 초동 개표를 시작해요.';
+  } else {
+    els.countLabel.textContent = (d.phase === 'done' ? (d.final ? '최종 초동 득표' : '초동 누적 득표 · 최종 집계 대기') : '초동 누적 득표') + (demo ? ' · 예시' : '');
+    els.countNum.textContent = fN(shown != null ? shown : d.total);
+    if (d.hasData) {
+      els.countSub.innerHTML = '직전 집계 대비 <b class="up">' + esc(fSigned(d.delta)) + '</b>장 · ' + esc(fDT(d.last.t)) + ' 기준' + (d.last.m ? ' · ' + esc(d.last.m) : '');
+    } else {
+      els.countSub.textContent = '첫 집계를 기다리고 있어요. 운영자가 한터차트 숫자를 입력하면 여기에 바로 떠요.';
+    }
+  }
+  els.turnoutPct.textContent = (d.turnout * 100).toFixed(1) + '%';
+  const segs = segments(d);
+  els.tbar.innerHTML = segs.map(g => {
+    const f = clamp((d.now - g.t0) / (g.t1 - g.t0), 0, 1);
+    return '<span class="tseg' + (f > 0 && f < 1 ? ' on' : '') + '" style="flex:' + g.hours + ' 1 0"><i style="width:' + (f * 100).toFixed(2) + '%"></i></span>';
+  }).join('');
+  els.tdays.innerHTML = segs.map(g => '<span class="' + (g.hours < 12 ? 'short' : '') + '" style="flex:' + g.hours + ' 1 0">' + g.k.d + '일 <small>' + g.k.wd + '</small></span>').join('');
+  els.periodTxt.textContent = fDT(d.R) + ' ~ ' + fEdge(d.E);
+}
+function renderDuel(d) {
+  const top = d.top;
+  if (!top) {
+    setChip(els.duelStatus, 'wait', '비교 없음');
+    els.duelBody.innerHTML = '<p class="empty">비교할 이전 기록이 없어요. 운영자가 설정에서 이전 앨범 초동을 추가할 수 있어요.</p>';
+    return;
+  }
+  const j = judge(d, top.value);
+  setChip(els.duelStatus, j, j === 'win' ? '경신' : (j === 'counting' || j === 'wait') ? JT[j] : '경신 ' + JT[j]);
+  const scale = Math.max(d.total, top.value) * 1.08;
+  const cur = shown != null ? shown : d.total;
+  const gap = top.value - d.total;
+  const need = d.phase === 'live' && gap > 0 && d.remDataH > 0 ? gap / d.remDataH : null;
+  let verdict;
+  if (d.phase === 'pre') verdict = '<div class="verdict"><span>발매 후 <b>' + fN(top.value) + '</b>장에 도전해요</span></div>';
+  else if (gap > 0) verdict = '<div class="verdict"><span>경신까지 <b>' + fN(gap) + '</b>장</span><span>기록 대비 ' + (d.total / top.value * 100).toFixed(1) + '%</span></div>';
+  else verdict = '<div class="verdict won"><span><b>' + fN(-gap) + '</b>장 차로 자체 최고 경신</span><span>기록 대비 ' + (d.total / top.value * 100).toFixed(1) + '%</span></div>';
+  const pulseSub = d.phase === 'pre' ? '미니 4집 · 발매 전' : d.phase === 'done' ? (d.final ? '미니 4집 · 최종' : '미니 4집 · 최종 집계 대기') : '미니 4집 · 개표 중';
+  els.duelBody.innerHTML =
+    '<div class="duel-row pulse"><span class="d-ballot">4</span><span class="d-name">PULSE<small>' + esc(pulseSub) + '</small></span>'
+    + '<span class="d-val" data-live="pulse">' + fN(cur) + '</span>'
+    + '<span class="d-bar"><i data-live-bar="' + scale + '" style="width:' + (clamp(cur / scale, 0, 1) * 100).toFixed(2) + '%"></i><b class="d-mark" style="left:' + (top.value / scale * 100).toFixed(2) + '%"></b></span></div>'
+    + '<div class="duel-row rival"><span class="d-ballot">' + esc(top.ballot || '·') + '</span><span class="d-name">' + esc(top.name) + '<small>' + esc(top.sub || '현재 자체 최고') + '</small></span>'
+    + '<span class="d-val">' + fN(top.value) + '</span><span class="d-bar"><i style="width:' + (top.value / scale * 100).toFixed(2) + '%"></i></span></div>'
+    + verdict
+    + '<dl class="dstats">'
+    + '<div><dt>최근 3시간 속도</dt><dd>' + (d.pace != null && d.phase !== 'pre' ? fN(d.pace) + '<small>장/시간</small>' : '—') + '</dd></div>'
+    + '<div><dt>경신에 필요한 속도</dt><dd>' + (need != null ? fN(need) + '<small>장/시간</small>' : gap <= 0 && d.phase !== 'pre' ? '달성' : '—') + '</dd></div>'
+    + '<div><dt>시간당 평균</dt><dd>' + (d.hasData && d.dataH > 0.05 ? fN(d.total / d.dataH) + '<small>장/시간</small>' : '—') + '</dd></div>'
+    + '<div><dt>' + (d.phase === 'pre' ? '개표 시작까지' : '초동 마감까지') + '</dt><dd class="dur">' + esc(d.phase === 'done' ? '마감' : fDur((d.phase === 'pre' ? d.R : d.E) - d.now)) + '</dd></div>'
+    + '</dl>';
+}
+function renderBoard(d, st) {
+  const tiles = tilesOf(d, st);
+  const ref = shown != null ? shown : d.total;
+  els.msGrid.innerHTML = tiles.map(t => {
+    const crossed = d.total >= t.value;
+    const pending = crossed && ref + 0.5 < t.value;
+    if (crossed && !pending) seenSet().add(t.key);
+    let j = judge(d, t.value);
+    if (pending) j = 'counting';
+    const ct = crossed ? crossAt(d.P, t.value) : null;
+    const foot = crossed ? fDT(ct) + '경 돌파' : d.phase === 'pre' ? '발매 후 개표' : (d.phase === 'done' && d.final ? '목표 미달' : '남은 표 ' + fN(t.value - d.total));
+    const val = t.kind === 'rival' ? (t.isTop ? '자체 최고 · ' : '역대 기록 · ') + fN(t.value) + '장' : fN(t.value) + '장';
+    return '<div class="ms ' + t.kind + ' st-' + j + '">'
+      + '<div class="ms-top"><span class="ms-name">' + esc(t.name) + '</span><span class="chip c-' + j + '" data-chip>' + JT[j] + '</span></div>'
+      + '<div class="ms-val">' + esc(val) + '</div>'
+      + '<div class="ms-bar"><i data-live-bar="' + t.value + '" style="width:' + (clamp(ref / t.value, 0, 1) * 100).toFixed(2) + '%"></i></div>'
+      + '<div class="ms-foot">' + esc(foot) + '</div>'
+      + (crossed ? '<div class="stamp' + (pending ? ' pending' : '') + '" data-th="' + t.value + '" data-key="' + esc(t.key) + '" aria-hidden="true"><span>당선</span></div>' : '')
+      + '</div>';
+  }).join('') || '<p class="empty">목표 선거구가 없어요.</p>';
+  return tiles;
+}
+function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+function renderChart(d) {
+  const box = els.chart;
+  const W = Math.round(clamp(box.clientWidth || 720, 280, 1100)), Hc = Math.round(clamp(W * 0.46, 230, 360));
+  const L = 48, Rp = 12, T = 16, B = 36, iw = W - L - Rp, ih = Hc - T - B;
+  const maxV = Math.max(d.total * 1.12, (d.top ? d.top.value : 0) * 1.15, 20000);
+  const step = niceStep(maxV / 4), yMax = Math.ceil(maxV / step) * step;
+  const X = t => L + (clamp(t, d.R, d.E) - d.R) / (d.E - d.R) * iw;
+  const Y = v => T + ih - clamp(v / yMax, 0, 1) * ih;
+  const f1 = n => n.toFixed(1);
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hc + '" width="' + W + '" height="' + Hc + '" role="img" aria-label="' + esc(d.hasData ? '초동 누적 판매량 추이, 현재 ' + fN(d.total) + '장' : '초동 누적 판매량 추이, 아직 집계 없음') + '">';
+  s += '<defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="ga0"></stop><stop offset="1" class="ga1"></stop></linearGradient></defs>';
+  for (let v = 0; v <= yMax + 1; v += step) {
+    const y = Y(v);
+    s += '<line class="g' + (v === 0 ? ' g0' : '') + '" x1="' + L + '" x2="' + (W - Rp) + '" y1="' + f1(y) + '" y2="' + f1(y) + '"></line>'
+      + '<text class="yl" x="' + (L - 8) + '" y="' + f1(y + 4) + '" text-anchor="end">' + (v === 0 ? '0' : fMan(v)) + '</text>';
+  }
+  segments(d).forEach((g, i) => {
+    const x0 = X(g.t0), x1 = X(g.t1), cx = (x0 + x1) / 2, w = x1 - x0;
+    if (i > 0) s += '<line class="ds" x1="' + f1(x0) + '" x2="' + f1(x0) + '" y1="' + T + '" y2="' + (T + ih) + '"></line>';
+    const lab = w > 38 ? g.k.mo + '.' + g.k.d : w > 16 ? String(g.k.d) : '';
+    if (lab) s += '<text class="xl" x="' + f1(cx) + '" y="' + (Hc - 18) + '" text-anchor="middle">' + lab + '</text><text class="xw" x="' + f1(cx) + '" y="' + (Hc - 4) + '" text-anchor="middle">' + g.k.wd + '</text>';
+  });
+  d.rivals.forEach(r => {
+    if (r.value > yMax) return;
+    const y = Y(r.value);
+    s += '<line class="rv" x1="' + L + '" x2="' + (W - Rp) + '" y1="' + f1(y) + '" y2="' + f1(y) + '"></line>'
+      + '<text class="rvl" x="' + (W - Rp - 2) + '" y="' + f1(y - 6) + '" text-anchor="end">' + esc(r.name) + ' ' + fN(r.value) + '</text>';
+  });
+  if (d.now > d.R && d.now < d.E) {
+    const x = X(d.now);
+    s += '<line class="nw" x1="' + f1(x) + '" x2="' + f1(x) + '" y1="' + T + '" y2="' + (T + ih) + '"></line>';
+  }
+  if (d.hasData) {
+    const pts = d.P.map(p => f1(X(p.t)) + ',' + f1(Y(p.v))).join(' ');
+    s += '<polygon class="ar" points="' + f1(X(d.R)) + ',' + f1(Y(0)) + ' ' + pts + ' ' + f1(X(d.last.t)) + ',' + f1(Y(0)) + '"></polygon>';
+    s += '<polyline class="ln" points="' + pts + '"></polyline>';
+    if (d.P.length < 80) for (let i = 1; i < d.P.length - 1; i++) s += '<circle class="pt" cx="' + f1(X(d.P[i].t)) + '" cy="' + f1(Y(d.P[i].v)) + '" r="2.4"></circle>';
+    const lx = X(d.last.t), ly = Y(d.last.v), label = fN(d.last.v), tw = label.length * 8 + 16;
+    let bx = lx + 10; if (bx + tw > W - Rp) bx = lx - 10 - tw;
+    let by = ly - 30; if (by < T) by = ly + 10;
+    s += '<circle class="lr" cx="' + f1(lx) + '" cy="' + f1(ly) + '" r="9"></circle><circle class="lp" cx="' + f1(lx) + '" cy="' + f1(ly) + '" r="4.5"></circle>'
+      + '<rect class="lb" x="' + f1(bx) + '" y="' + f1(by) + '" width="' + f1(tw) + '" height="21" rx="4"></rect><text class="lt" x="' + f1(bx + tw / 2) + '" y="' + f1(by + 15) + '" text-anchor="middle">' + label + '</text>';
+  } else {
+    s += '<text class="emp" x="' + f1(L + iw / 2) + '" y="' + f1(T + ih / 2) + '" text-anchor="middle">' + (d.phase === 'pre' ? '발매와 동시에 개표 추이가 그려져요' : '첫 집계를 기다리는 중이에요') + '</text>';
+  }
+  box.innerHTML = s + '</svg>';
+}
+function renderDaily(d) {
+  const segs = segments(d);
+  const vals = segs.map(g => (d.hasData && g.t0 < d.last.t) ? Math.max(0, valueAt(d.P, Math.min(g.t1, d.last.t)) - valueAt(d.P, g.t0)) : null);
+  const max = Math.max(1, ...vals.filter(v => v != null));
+  els.daily.innerHTML = segs.map((g, i) => {
+    const v = vals[i], cur = d.now >= g.t0 && d.now < g.t1, fut = d.now < g.t0;
+    const h = v != null ? Math.max(1.5, v / max * 100) : 0;
+    const tip = fDay(g.t0) + (v != null ? ' · 약 ' + fN(v) + '장' : ' · 집계 전');
+    return '<div class="dbar' + (fut ? ' future' : cur ? ' cur' : '') + '" title="' + esc(tip) + '">'
+      + '<span class="dbar-v">' + (v != null ? fMan(v) : '') + '</span>'
+      + '<span class="dbar-col"><i style="height:' + h.toFixed(1) + '%"></i></span>'
+      + '<span class="dbar-l">' + g.k.mo + '.' + g.k.d + '<small>' + g.k.wd + (g.hours < 24 ? ' · ' + Math.round(g.hours) + '시간' : '') + '</small></span></div>';
+  }).join('');
+}
+function renderHmap(d) {
+  const rows = [];
+  for (let ds = dayStartK(d.R); ds < d.E; ds += DAY) rows.push(ds);
+  const cells = []; let max = 0;
+  rows.forEach(ds => {
+    for (let h = 0; h < 24; h++) {
+      const t0 = ds + h * H, t1 = t0 + H; let cls = '', v = null;
+      if (t1 <= d.R || t0 >= d.E) cls = 'pre';
+      else {
+        const a = Math.max(t0, d.R);
+        if (d.hasData && a < d.last.t) { v = Math.max(0, valueAt(d.P, Math.min(t1, d.last.t)) - valueAt(d.P, a)); max = Math.max(max, v); }
+        if (d.now >= t0 && d.now < t1) cls = 'now'; else if (t0 > d.now) cls = 'fut'; else if (v == null) cls = 'wait';
+      }
+      cells.push({ ds, h, cls, v });
+    }
+  });
+  let html = '<span></span>';
+  for (let h = 0; h < 24; h++) html += '<span class="hm-h">' + (h % 6 === 0 ? h + '시' : '') + '</span>';
+  rows.forEach((ds, ri) => {
+    const k = kp(ds);
+    html += '<span class="hm-l">' + k.mo + '.' + k.d + '<small>' + k.wd + '</small></span>';
+    for (let h = 0; h < 24; h++) {
+      const c = cells[ri * 24 + h];
+      let lv = '';
+      if (c.v != null) lv = c.v <= 0 || max <= 0 ? 'l0' : 'l' + (1 + Math.min(4, Math.floor(Math.sqrt(c.v / max) * 5)));
+      const tip = k.mo + '.' + k.d + '(' + k.wd + ') ' + h + '시 · ' + (c.v != null ? '약 ' + fN(c.v) + '장' : c.cls === 'pre' ? '집계 기간 밖' : c.cls === 'fut' ? '개표 전' : c.cls === 'now' ? '개표 중' : '집계 대기');
+      html += '<span class="hc ' + lv + ' ' + c.cls + '" title="' + esc(tip) + '"></span>';
+    }
+  });
+  els.hmap.innerHTML = html;
+}
+function renderRank(d) {
+  const items = d.rivals.map(r => ({ name: r.name, sub: r.sub, value: r.value, cur: false }));
+  items.push({ name: 'PULSE', sub: d.phase === 'pre' ? '발매 전' : d.phase === 'done' ? (d.final ? '최종' : '최종 집계 대기') : '개표 중', value: d.total, cur: true });
+  items.sort((a, b) => (b.value - a.value) || (a.cur ? -1 : 1));
+  const max = Math.max(1, ...items.map(i => i.value));
+  els.rank.innerHTML = items.map((it, i) =>
+    '<li class="rk' + (it.cur ? ' cur' : '') + '"><span class="rk-n">' + (i + 1) + '</span>'
+    + '<span class="rk-name">' + esc(it.name) + '<small>' + esc(it.sub || '') + '</small></span>'
+    + '<span class="rk-v"' + (it.cur ? ' data-live="pulse"' : '') + '>' + fN(it.cur && shown != null ? shown : it.value) + '</span>'
+    + '<span class="rk-bar"><i' + (it.cur ? ' data-live-bar="' + max + '"' : '') + ' style="width:' + (clamp((it.cur && shown != null ? shown : it.value) / max, 0, 1) * 100).toFixed(2) + '%"></i></span></li>'
+  ).join('');
+}
+function renderLog(d) {
+  const P = d.P.slice(1);
+  els.logSum.textContent = P.length ? P.length + '건 · 마지막 ' + fDT(d.last.t) : '아직 없어요';
+  if (!P.length) { els.logBody.innerHTML = '<tr><td colspan="5" class="m">발매 후 첫 집계가 들어오면 여기에 쌓여요.</td></tr>'; return; }
+  const rows = [];
+  for (let i = P.length - 1; i >= 0; i--) {
+    const p = P[i], q = i > 0 ? P[i - 1] : d.P[0];
+    const dv = p.v - q.v, dh = (p.t - q.t) / H;
+    rows.push('<tr><td>' + esc(fDT(p.t)) + '</td><td class="n">' + fN(p.v) + '</td><td class="n">' + esc(fSigned(dv)) + '</td><td class="n">' + (dh > 0.05 ? fN(dv / dh) : '—') + '</td><td class="m">' + esc(p.m || '') + '</td></tr>');
+  }
+  els.logBody.innerHTML = rows.join('');
+}
+let tickerKey = '', tickerItems = [], tickerRot = 0;
+function renderTicker(d, st, tiles) {
+  const it = [];
+  if (demo) it.push('[예시] 지금 보이는 숫자는 실제 판매량이 아니에요');
+  if (d.phase === 'pre') {
+    it.push('리센느 미니 4집 PULSE, ' + fKoDate(d.R) + ' ' + fKoTime(d.R) + ' 발매');
+    it.push('발매와 동시에 초동 개표 시작 · 집계 기간 ' + fDT(d.R) + ' ~ ' + fEdge(d.E));
+    if (d.top) it.push('현재 자체 최고 초동은 ' + d.top.name + ' ' + fN(d.top.value) + '장');
+    if (st.titleTrack) it.push('타이틀곡 「' + st.titleTrack + '」');
+  } else {
+    it.push(d.hasData ? 'PULSE 초동 ' + fN(d.total) + '장 · ' + fDT(d.last.t) + ' 집계 기준' : 'PULSE 첫 집계를 기다리고 있어요');
+    tiles.filter(t => d.total >= t.value).sort((a, b) => b.value - a.value).slice(0, 4).forEach(t => {
+      it.push((t.kind === 'rival' ? t.name + ' 기록' : t.name + ' 선거구') + ' PULSE 당선 · ' + fDT(crossAt(d.P, t.value)) + '경 돌파');
+    });
+    if (d.top) it.push(d.total < d.top.value ? '자체 최고 기록(' + d.top.name + ' ' + fN(d.top.value) + '장)까지 ' + fN(d.top.value - d.total) + '장 남았어요' : d.top.name + '(' + fN(d.top.value) + '장)를 ' + fN(d.total - d.top.value) + '장 차로 넘어 자체 최고 초동 경신');
+    const next = tiles.find(t => d.total < t.value && t.kind === 'ms');
+    if (next) it.push('다음 목표 ' + next.name + ' 선거구까지 ' + fN(next.value - d.total) + '장');
+    it.push(d.phase === 'live' ? '개표율 ' + (d.turnout * 100).toFixed(1) + '% · 초동 마감까지 ' + fDur(d.E - d.now) : '초동 집계 기간이 끝났어요' + (d.final ? '' : ' · 최종 집계를 기다리는 중'));
+  }
+  st.notes.forEach(n => it.push(n));
+  it.push('리센느 팬이 만든 비공식 페이지 · 판매량 출처 한터차트 실시간 초동(운영자 입력)');
+  els.tickerLabel.textContent = demo ? '예시' : d.phase === 'pre' ? '예고' : d.phase === 'done' ? '결과' : '속보';
+  const key = it.join('\u0001');
+  if (key === tickerKey) return;
+  tickerKey = key; tickerItems = it;
+  if (REDUCED) { tickerRot = 0; els.tickerRun.innerHTML = '<span class="tk">' + esc(it[0]) + '</span>'; return; }
+  const one = it.map(t => '<span class="tk">' + esc(t) + '</span><span class="tk-sep">◆</span>').join('');
+  els.tickerRun.innerHTML = one + one;
+  requestAnimationFrame(() => { const w = els.tickerRun.scrollWidth / 2; els.tickerRun.style.setProperty('--tk-dur', Math.max(24, w / 85).toFixed(1) + 's'); });
+}
+function renderFoot(d) {
+  els.srcNote.textContent = d.rivals.map(r => r.name + ' 초동 ' + fN(r.value) + '장' + (r.src ? '은 ' + r.src : '')).join(' / ') + (d.rivals.length ? '이에요.' : '');
+}
+
+let lastPhase = null, lastSr = '';
+function renderAll() {
+  const st = viewState();
+  const d = derive(st, nowMs());
+  lastD = d; lastPhase = d.phase;
+  topKey = d.top ? rvKey(d.top) : null;
+  const plan = planTween(d);
+  renderHeader(d);
+  els.clock.innerHTML = clockHTML(d.now);
+  renderHero(d, st);
+  renderDuel(d);
+  const tiles = renderBoard(d, st);
+  renderChart(d);
+  renderDaily(d);
+  renderHmap(d);
+  renderRank(d);
+  renderLog(d);
+  renderTicker(d, st, tiles);
+  renderFoot(d);
+  if (canWrite) renderAdminList();
+  const sr = d.hasData ? 'PULSE 초동 ' + fN(d.total) + '장, ' + fDT(d.last.t) + ' 기준' : '';
+  if (sr !== lastSr) { lastSr = sr; els.srLive.textContent = sr; }
+  if (plan) tween(plan.from, plan.to); else if (!demo) persist();
+}
+
+/* ---------- moments ---------- */
+let flashT = 0;
+function flash(kicker, title, sub) {
+  els.flashKicker.textContent = kicker; els.flashTitle.textContent = title; els.flashSub.textContent = sub;
+  els.flash.hidden = false; els.flash.classList.remove('go'); void els.flash.offsetWidth; els.flash.classList.add('go');
+  blip('news');
+  clearTimeout(flashT); flashT = setTimeout(() => { els.flash.hidden = true; }, 4600);
+}
+function newsFlash() {
+  const d = lastD; if (!d || !d.top) return;
+  const ct = crossAt(d.P, d.top.value);
+  flash(demo ? '속보 · 예시' : '속보', 'PULSE, ' + d.top.name + ' 넘어 자체 최고 초동 경신', fN(d.total) + '장 · ' + (ct ? fDT(ct) + '경 돌파' : ''));
+}
+let toastT = 0;
+function toast(msg) { els.toast.textContent = msg; els.toast.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { els.toast.hidden = true; }, 3800); }
+
+/* ---------- sound (off until the viewer turns it on) ---------- */
+let actx = null, soundOn = false;
+function blip(kind) {
+  if (!soundOn || !actx) return;
+  try {
+    const t = actx.currentTime;
+    const tone = (f, at, dur, type, vol) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t + at);
+      g.gain.setValueAtTime(0.0001, t + at); g.gain.exponentialRampToValueAtTime(vol, t + at + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + at + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t + at); o.stop(t + at + dur + 0.03);
+    };
+    if (kind === 'stamp') { tone(150, 0, 0.22, 'sine', 0.5); tone(72, 0, 0.3, 'triangle', 0.35); tone(988, 0.15, 0.45, 'sine', 0.16); tone(1319, 0.27, 0.65, 'sine', 0.14); }
+    else if (kind === 'news') { tone(784, 0, 0.2, 'sine', 0.2); tone(1047, 0.17, 0.2, 'sine', 0.2); tone(1568, 0.34, 0.6, 'sine', 0.2); }
+    else { tone(1568, 0, 0.07, 'square', 0.035); }
+  } catch (e) {}
+}
+
+/* ---------- saving (owner / editors only) ---------- */
+let ART = null, canWrite = false, saving = false;
+function setMsg(el, msg, err) { el.textContent = msg || ''; el.classList.toggle('err', !!err); }
+function lockForms(on) { [els.snapGo, els.setGo].forEach(b => { b.disabled = on; }); }
+function readOnlyNow(msg) {
+  canWrite = false; ART = null; els.adminFab.hidden = true;
+  if (els.adminDlg.open) els.adminDlg.close();
+  toast(msg);
+}
+async function save(next, okMsg, msgEl, retried) {
+  if (!ART || saving) return;
+  saving = true; lockForms(true); setMsg(msgEl, '반영하는 중…');
+  next.updatedAt = isoK(Date.now());
+  SS.set('pulse-toast', okMsg);
+  try {
+    await ART.publish(buildHtml(next));
+    realState = next; saving = false; lockForms(false); setMsg(msgEl, '');
+    if (els.adminDlg.open) els.adminDlg.close();
+    renderAll();
+    setTimeout(() => { const t = SS.get('pulse-toast'); if (t) { SS.del('pulse-toast'); toast(t); } }, 2500);
+  } catch (e) {
+    SS.del('pulse-toast');
+    saving = false;
+    const c = e && e.code;
+    if (c === 'conflict') { setMsg(msgEl, '다른 화면에서 먼저 저장했어요. 최신 버전을 불러오는 중이에요. 불러온 뒤 다시 입력해 주세요.', true); return; }
+    if (['not_writer', 'not_granted', 'consent_required', 'capability_disabled', 'capability_removed', 'not_declared'].indexOf(c) > -1) { readOnlyNow('이 화면은 읽기 전용이에요. 저장 권한이 있는 계정으로 열어야 입력할 수 있어요.'); return; }
+    if (c === 'upstream_error' && !retried) { setTimeout(() => save(next, okMsg, msgEl, true), 700 + Math.random() * 900); return; }
+    lockForms(false);
+    if (c === 'rate_limited') setMsg(msgEl, '저장이 너무 잦아요. 1분쯤 뒤에 다시 반영해 주세요.', true);
+    else if (c === 'too_large') setMsg(msgEl, '저장할 내용이 너무 커요. 오래된 집계 기록을 몇 개 지워 주세요.', true);
+    else setMsg(msgEl, '저장하지 못했어요. 잠시 후 다시 시도해 주세요. (' + (c || '알 수 없는 오류') + ')', true);
+  }
+}
+const cloneState = () => JSON.parse(JSON.stringify(realState));
+function renderAdminList() {
+  const ss = realState.snapshots;
+  els.admCount.textContent = ss.length ? ss.length + '건' : '';
+  els.admList.innerHTML = ss.length ? ss.map((s, i) => ({ s, i })).reverse().map(({ s, i }) =>
+    '<li><span>' + esc(fDT(Date.parse(s.t))) + '</span><span class="al-v">' + fN(s.v) + '</span><span class="al-m">' + esc(s.m || '') + '</span><button type="button" class="tbtn" data-del="' + i + '">삭제</button></li>'
+  ).join('') : '<li class="empty">아직 입력한 집계가 없어요.</li>';
+}
+function fillSettings() {
+  const st = realState;
+  els.setRivals.value = st.rivals.map(r => [r.name, r.sub, r.value, r.src].join(' | ')).join('\n');
+  els.setMs.value = st.milestones.map(v => (v % 10000 === 0 ? v / 10000 + '만' : String(v))).join(', ');
+  els.setNotes.value = st.notes.join('\n');
+  els.setStart.value = toInput(Date.parse(st.releaseAt));
+  els.setEnd.value = toInput(Date.parse(st.endAt));
+}
+function openAdmin() {
+  if (!canWrite) return;
+  if (demo) demoStop();
+  els.inT.value = toInput(Date.now());
+  setMsg(els.snapMsg, ''); setMsg(els.setMsg, '');
+  fillSettings(); renderAdminList();
+  try { els.adminDlg.showModal(); } catch (e) { els.adminDlg.setAttribute('open', ''); }
+  setTimeout(() => { try { els.inV.focus(); } catch (e) {} }, 30);
+}
+let lowerOk = false;
+function onSnapSubmit(e) {
+  e.preventDefault();
+  const v = parseInt(String(els.inV.value).replace(/[^0-9]/g, ''), 10);
+  if (!isFinite(v)) { setMsg(els.snapMsg, '판매량을 숫자로 입력해 주세요.', true); return; }
+  const t = fromInput(els.inT.value);
+  if (!isFinite(t)) { setMsg(els.snapMsg, '기준 시각을 확인해 주세요.', true); return; }
+  const R = Date.parse(realState.releaseAt);
+  if (t < R) { setMsg(els.snapMsg, '기준 시각이 발매 시각(' + fDT(R) + ')보다 앞서요.', true); return; }
+  const before = realState.snapshots.filter(s => Date.parse(s.t) <= t).pop();
+  if (before && v < before.v && !lowerOk) { lowerOk = true; setMsg(els.snapMsg, '직전 집계(' + fN(before.v) + '장)보다 작은 숫자예요. 맞다면 한 번 더 눌러 주세요.', true); return; }
+  lowerOk = false;
+  const next = cloneState();
+  next.snapshots.push({ t: isoK(t), v, m: els.inM.value.trim().slice(0, 60) });
+  save(normalize(next), fN(v) + '장 반영 완료 · 모든 시청자 화면이 갱신돼요', els.snapMsg);
+}
+function parseCount(s) {
+  const t = String(s).trim().replace(/,/g, '');
+  const m = /^([\d.]+)\s*만$/.exec(t);
+  if (m) return Math.round(parseFloat(m[1]) * 10000);
+  return /^\d+$/.test(t) ? parseInt(t, 10) : NaN;
+}
+function onSetSubmit(e) {
+  e.preventDefault();
+  const rivals = [];
+  for (const line of els.setRivals.value.split('\n')) {
+    const t = line.trim(); if (!t) continue;
+    const parts = t.split('|').map(x => x.trim());
+    const value = parseCount(parts[2] || '');
+    if (!parts[0] || !isFinite(value) || value <= 0) { setMsg(els.setMsg, '비교 기록 "' + t.slice(0, 24) + '" 줄을 확인해 주세요. 이름 | 설명 | 초동 | 출처 순서예요.', true); return; }
+    rivals.push({ name: parts[0], sub: parts[1] || '', value, src: parts[3] || '', ballot: ballotOf(parts[1] || '') });
+  }
+  const ms = [];
+  for (const tok of els.setMs.value.split(/[,\n]+/)) {
+    if (!tok.trim()) continue;
+    const v = parseCount(tok);
+    if (!isFinite(v) || v <= 0) { setMsg(els.setMsg, '목표 선거구 "' + tok.trim() + '"를 숫자로 바꿀 수 없어요.', true); return; }
+    ms.push(v);
+  }
+  const s0 = fromInput(els.setStart.value), s1 = fromInput(els.setEnd.value);
+  if (!isFinite(s0) || !isFinite(s1) || s1 <= s0) { setMsg(els.setMsg, '초동 마감은 시작보다 뒤여야 해요.', true); return; }
+  const next = cloneState();
+  next.rivals = rivals; next.milestones = ms;
+  next.notes = els.setNotes.value.split('\n').map(x => x.trim()).filter(Boolean);
+  next.releaseAt = isoK(s0); next.endAt = isoK(s1);
+  save(normalize(next), '설정을 저장했어요', els.setMsg);
+}
+function onListClick(e) {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = '삭제 확인';
+    setTimeout(() => { if (b.isConnected) { b.classList.remove('armed'); b.textContent = '삭제'; } }, 3500);
+    return;
+  }
+  const i = +b.dataset.del;
+  const next = cloneState();
+  const gone = next.snapshots.splice(i, 1)[0];
+  if (!gone) return;
+  save(normalize(next), fDT(Date.parse(gone.t)) + ' 집계(' + fN(gone.v) + '장)를 지웠어요', els.snapMsg);
+}
+async function initCaps() {
+  const C = window.claude;
+  if (!C || typeof C.use !== 'function') { pollData(); return; }
+  let art = null, user = null;
+  try { [art, user] = await Promise.all([C.use('artifact'), C.use('user')]); } catch (e) {}
+  if (!art) return;
+  let ok = false;
+  try { ok = user ? !!(await user.canEdit()) : false; } catch (e) {}
+  if (!ok) return;
+  ART = art; canWrite = true;
+  els.adminFab.hidden = false;
+  renderAdminList();
+}
+async function pollData() {
+  try {
+    const r = await fetch('data.json?_=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const n = normalize(await r.json());
+    if (JSON.stringify(n) !== JSON.stringify(realState)) { realState = n; renderAll(); }
+  } catch (e) { return; }
+  setTimeout(pollData, 60000);
+}
+
+/* ---------- clock loop ---------- */
+function tick() {
+  const now = nowMs();
+  els.clock.innerHTML = clockHTML(now);
+  const st = viewState(), R = Date.parse(st.releaseAt), E = Date.parse(st.endAt);
+  const phase = now < R ? 'pre' : now < E ? 'live' : 'done';
+  if (phase !== lastPhase) {
+    const was = lastPhase;
+    renderAll();
+    if (was === 'pre' && phase === 'live' && !demo) flash('개표 시작', 'PULSE 초동 개표를 시작합니다', fKoDate(R) + ' ' + fKoTime(R) + ' 발매');
+    return;
+  }
+  if (phase === 'pre') els.cdNum.textContent = countdownText(R - now);
+  els.turnoutPct.textContent = (clamp((now - R) / (E - R), 0, 1) * 100).toFixed(1) + '%';
+}
+
+/* ---------- wiring ---------- */
+function bind() {
+  els.demoOn.addEventListener('click', demoStart);
+  els.demoOn2.addEventListener('click', demoStart);
+  els.demoOff.addEventListener('click', demoStop);
+  els.flash.addEventListener('click', () => { els.flash.hidden = true; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !els.flash.hidden) els.flash.hidden = true; });
+  els.btnSound.addEventListener('click', () => {
+    soundOn = !soundOn;
+    if (soundOn && !actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { soundOn = false; } }
+    if (soundOn && actx) { try { actx.resume(); } catch (e) {} }
+    els.btnSound.setAttribute('aria-pressed', String(soundOn));
+    els.btnSound.textContent = soundOn ? '효과음 켬' : '효과음';
+    blip('tick');
+  });
+  if (!document.fullscreenEnabled || !document.documentElement.requestFullscreen) els.btnFull.hidden = true;
+  else els.btnFull.addEventListener('click', () => {
+    if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); }
+    else { document.documentElement.requestFullscreen().catch(() => { els.btnFull.hidden = true; }); }
+  });
+  els.adminFab.addEventListener('click', openAdmin);
+  els.admClose.addEventListener('click', () => els.adminDlg.close());
+  els.fSnap.addEventListener('submit', onSnapSubmit);
+  els.inV.addEventListener('input', () => { lowerOk = false; });
+  els.fSet.addEventListener('submit', onSetSubmit);
+  els.admList.addEventListener('click', onListClick);
+  let rz = 0;
+  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (lastD) renderChart(lastD); }, 160); });
+  if (REDUCED) setInterval(() => {
+    if (tickerItems.length < 2) return;
+    tickerRot = (tickerRot + 1) % tickerItems.length;
+    els.tickerRun.innerHTML = '<span class="tk">' + esc(tickerItems[tickerRot]) + '</span>';
+  }, 5000);
+}
+
+let started = false;
+function start(hot) {
+  if (started) return; started = true;
+  const hd = hot && typeof hot === 'object' ? hot : {};
+  initialFrom = isFinite(hd.shown) ? +hd.shown : (mem.shown != null && isFinite(mem.shown) ? +mem.shown : null);
+  bind();
+  renderAll();
+  setInterval(tick, 1000);
+  setInterval(() => { if (!demo) renderAll(); }, 30000);
+  initCaps();
+  const t = SS.get('pulse-toast');
+  if (t) { SS.del('pulse-toast'); toast(t); }
+}
+const hot = window.claude && window.claude.hot;
+try { if (hot && typeof hot.snapshot === 'function') hot.snapshot(() => ({ shown: demo ? (demo.saved.shown) : (shown != null ? shown : curTarget) })); } catch (e) {}
+try { if (hot && typeof hot.ready === 'function') hot.ready(start); else start((hot && hot.data) || {}); } catch (e) { start({}); }
+setTimeout(() => start({}), 400);
+})();
+</script>
+</body></html>

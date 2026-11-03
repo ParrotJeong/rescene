@@ -1,0 +1,28 @@
+{
+ "v": 1,
+ "album": "PULSE",
+ "artist": "리센느",
+ "edition": "미니 4집",
+ "titleTrack": "With",
+ "releaseAt": "2026-11-03T18:00:00+09:00",
+ "endAt": "2026-11-10T00:00:00+09:00",
+ "rivals": [
+  {
+   "name": "lip bomb",
+   "sub": "미니 3집 · 2025.11.25 발매",
+   "value": 104406,
+   "src": "2025.12.3 스포츠경향 보도 기준",
+   "ballot": "3"
+  }
+ ],
+ "milestones": [
+  50000,
+  100000,
+  150000,
+  200000,
+  300000
+ ],
+ "snapshots": [],
+ "notes": [],
+ "updatedAt": null
+}
